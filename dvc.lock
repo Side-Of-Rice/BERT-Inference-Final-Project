@@ -1,3 +1,54 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a709182bda206a8e5a722c474e3ff41aacd3816267b9bf8893fad4c732d74c28
-size 1489
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: data/raw/listings.csv
+      hash: md5
+      md5: a213f72dd8a40430cf49643e777b2de9
+      size: 86325899
+    - path: data/raw/reviews.csv
+      hash: md5
+      md5: bb9423fd7bd12f778f86234039bab324
+      size: 499727675
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 0dd64af0fd43bc247c86ff3f8afbf8d1
+      size: 1087
+  validate:
+    cmd: python src/data_validation.py
+    deps:
+    - path: data/staged/ratings_and_reviews.csv
+      hash: md5
+      md5: 13ceedfbf45906f03888d71fc59ac29b
+      size: 461193584
+    - path: src/data_validation.py
+      hash: md5
+      md5: 59b42204350eec5fa78b8a640833638b
+      size: 1236
+  train:
+    cmd: python src/train_and_tune.py
+    deps:
+    - path: data/staged/cleaned_ratings_and_reviews.csv
+      hash: md5
+      md5: d5f66485189c54599049845b02203889
+      size: 439433180
+    - path: src/train_and_tune.py
+      hash: md5
+      md5: 8e5431c02a7ad773c7ce7fe1d3b07763
+      size: 7062
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/artifacts/bert_model.pkl
+      hash: md5
+      md5: bdcc8595db05a163d99c993d109e24f0
+      size: 439616423
+    - path: data/artifacts/test_data.pt
+      hash: md5
+      md5: 7eb69c1efa599f53b6bb6cc144857b22
+      size: 174175987
+    - path: src/evaluate.py
+      hash: md5
+      md5: 53537513b969f86a28d8d950f2d81c73
+      size: 2433
