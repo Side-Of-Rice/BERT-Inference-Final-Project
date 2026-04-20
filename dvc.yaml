@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0d5ac0f75b3717baa8e01f4b9cb750e54109b24c10caf8ae14226ff535bdd559
-size 609
+stages:
+  ingest:
+    cmd: python src/data_ingestion.py
+    deps:
+      - data/raw/listings.csv
+      - data/raw/reviews.csv
+      - src/data_ingestion.py
+
+  validate:
+    cmd: python src/data_validation.py
+    deps:
+      - data/staged/ratings_and_reviews.csv
+      - src/data_validation.py
+
+  train:
+    cmd: python src/train_and_tune.py
+    deps:
+      - data/staged/cleaned_ratings_and_reviews.csv
+      - src/train_and_tune.py
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - data/artifacts/test_data.pt
+      - data/artifacts/bert_model.pkl
+      - src/evaluate.py
