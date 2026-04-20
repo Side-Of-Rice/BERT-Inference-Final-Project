@@ -22,6 +22,14 @@ jobs:
       with:
         lfs: true
 
+    - name: Pull LFS files
+      run: git lfs pull
+
+    - name: Checkout and Smudge
+      run: |
+        git lfs install
+        git lfs checkout
+
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
