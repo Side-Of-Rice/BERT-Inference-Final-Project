@@ -15,6 +15,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
+        lfs: True
         python-version: "3.14.3"
 
     - name: Install dependencies
