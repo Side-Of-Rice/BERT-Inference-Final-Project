@@ -1,3 +1,61 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9306aba78151a3f56ef3528cd7cfbf570c8469d258827da8c07edad857dbfa01
-size 1619
+name: ML CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.14.3"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    #- name: Run Unit Test
+    #  run:  python -m pytest tests/
+
+    - name: Collect Data Sources
+      run: python src/data_ingestion.py
+
+    - name: Clean and Feature Engineer
+      run: python src/data_validation.py
+
+    - name: Small-Scale Training & Testing
+      run: python src/train_and_tune.py 
+
+    - name: Evaluate Model
+      run: python src/evaluate.py  # Exits with non-zero if performance < threshold
+
+  #Docker Build and Push
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Staging
+      run: |
+        echo "Deploying new model artifact..."
+    - name: Check out the repo
+      uses: actions/checkout@v4
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/bertinference:1.0, ${{ secrets.DOCKERHUB_USERNAME }}/bertinference:${{ github.sha }}
