@@ -21,7 +21,7 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    - name: Run Unit Test to ensure data is ingested correctly
+    - name: Run Unit Test
       run: pytest tests/
 
     - name: Collect Data Sources
