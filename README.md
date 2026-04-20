@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d8650b9f7752dd90cdb9db8d21a8be59ffb2e807d8f7be730c783972da1a985d
-size 403
+**How to run entire pipeline (ingestion, validation, train, evaluate)**
+
+1. Download all files in folder.
+
+2. Go to Command Terminal.
+
+3. Change directory to project-root folder (cd)
+
+4. Type "dvc repro".
+
+
+
+
+
+
+**How to run inference service**
+
+1. Download all files in folder.
+
+2. Go to Command Terminal.
+
+3. Change directory to inference folder (cd)
+
+4. Type "python predict.py"
