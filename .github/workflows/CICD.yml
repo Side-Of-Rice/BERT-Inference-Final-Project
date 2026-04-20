@@ -15,8 +15,12 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        lfs: True
         python-version: "3.14.3"
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        lfs: true
 
     - name: Install dependencies
       run: |
