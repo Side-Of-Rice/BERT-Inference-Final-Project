@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bbb02ddd5d03a0bfdeb1ce1b1b2898203b8f1f0f48c2811c5eb580c8b067a9c8
-size 463
+def test_model_training():
+    # Quick test of "train.py"
+    import subprocess
+    import sys
+    import os
+    from pathlib import Path
+    
+    current_script_path = Path(__file__).resolve()
+    parent_dir = current_script_path.parent
+    target_script_path = parent_dir / src / 'data_ingestion.py'
+    
+    result = subprocess.run([sys.executable, str(target_script_path)], capture_output = True)
+    assert result.returncode == 0, "Training script failed!"
