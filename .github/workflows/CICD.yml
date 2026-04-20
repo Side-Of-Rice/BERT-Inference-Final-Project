@@ -52,7 +52,7 @@ jobs:
   #Docker Build and Push
   deploy:
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - name: Deploy to Staging
       run: |
@@ -72,3 +72,26 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/bertinference:1.0, ${{ secrets.DOCKERHUB_USERNAME }}/bertinference:${{ github.sha }}
+
+  #Update Sagemaker Endpoint
+  update:
+    needs: build-and-test
+    runs-on: windows-latest
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::123456789012:role/GitHubActionRole
+        aws-region: us-east-1
+    - name: Create Endpoint Config
+      run: |
+        CONFIG_NAME="my-config-$(date +%s)"
+        aws sagemaker create-endpoint-config \
+        --endpoint-config-name $CONFIG_NAME \
+        --production-variants VariantName=AllTraffic,ModelName=my-new-model,InitialInstanceCount=1,InstanceType=ml.m5.large
+        echo "NEW_CONFIG=$CONFIG_NAME" >> $GITHUB_ENV
+    - name: Update SageMaker Endpoint
+      run: |
+        aws sagemaker update-endpoint \
+        --endpoint-name bert-inference \
+        --endpoint-config-name ${{ env.NEW_CONFIG }}
