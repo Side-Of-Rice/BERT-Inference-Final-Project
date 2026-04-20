@@ -22,7 +22,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Unit Test
-      run: pytest tests/
+      run:  python -m pytest tests/
 
     - name: Collect Data Sources
       run: python src/data_ingestion.py
